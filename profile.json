@@ -1,0 +1,37 @@
+{
+    "Gender": "female",
+    "Name": {
+        "First": "Ava",
+        "Last": "Martinez",
+        "Title": "Ms"
+    },
+    "Location": {
+        "Street": "62 Lincoln Rd",
+        "City": "Cienega Springs",
+        "State": "Kansas",
+        "Postcode": 65298
+    },
+    "Email": "ava.martinez@example.com",
+    "Login": {
+        "Username": "Spiritgrass",
+        "Password": "Skullvolcano",
+        "Salt": "Yhb1b0Y3z6G9BU0m",
+        "Md5": "a39fe5f84138546d97e7e1331abca399",
+        "Sha1": "zV_JRKuNq_TUDFChc43qE8a05Vk=",
+        "Sha256": "d-6sIEsndnTdeBI7_Ld-CfX7XdyDn1MfuzPaLLx5Xmo="
+    },
+    "Dob": "Saturday 5 Feb 2018",
+    "Registered": "Saturday 12 May 2018",
+    "Phone": "+1 672 6352957 881 ",
+    "Cell": "+226 10 66 73 8 680 8 ",
+    "ID": {
+        "Name": "SSN",
+        "Value": "540-67-7206"
+    },
+    "Picture": {
+        "Large": "https://randomuser.me/api/portraits/women/22.jpg",
+        "Medium": "https://randomuser.me/api/portraits/med/women/22.jpg ",
+        "Thumbnail": "https://randomuser.me/api/portraits/thumb/women/22.jpg"
+    },
+    "Nat": "US"
+}
