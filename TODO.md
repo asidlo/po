@@ -10,7 +10,6 @@ links for pandas examples/docs:
 Functions
 
 - [ ] po.GenerateSeries(n int),GenerateFloat/IntSlice, mix and match
-- [ ] ReadCsv()/WriteCsv()
 - [ ] Tail()
 - [ ] FFill()
 - [ ] DropEmpty(all=true)/DropNull()
@@ -44,6 +43,7 @@ Functions
 - [ ] ReadExcel()/WriteExcel(xslx, "Sheet 1")
 - [x] po.GenerateDataFrame(n int) utilize other generators
 - [x] po.DataFrame.Select(colNames []string) po.DataFrame
+- [x] ReadCsv()/WriteCsv()
 
 Extraneous
 
@@ -56,3 +56,4 @@ Extraneous
 - [ ] Order columns by user input instead of alphanumeric
 - [ ] Adjust DataFrame String() method to handle large tables
 - [ ] Add CONTRIBUTING.md
+- [ ] Make Reading/Writing csv methods better support for options like header

@@ -4,6 +4,8 @@
 package po
 
 import (
+	"encoding/csv"
+	"io"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -251,6 +253,15 @@ func (df DataFrame) Select(c ...string) DataFrame {
 	return rdf
 }
 
+// NewSeries is a variadic function that returns a Series comprised of the provided strings
+func NewSeries(s ...string) Series {
+	series := make(Series, len(s))
+	for i, v := range s {
+		series[i] = v
+	}
+	return series
+}
+
 // NewDataFrame returns a new DataFrame object with rows corresponding
 // to provided ss and column names corresponding to provided cols.
 // If no ss is provided, then an empty dataframe will be created using
@@ -374,4 +385,31 @@ func GenerateDataFrame(n int) DataFrame {
 		"FirstName":    firstnames,
 		"LastName":     lastnames,
 	}
+}
+
+// ReadCsv reads in csv data and returns a DataFrame with randomly generated
+// column names for each input column.
+func ReadCsv(r io.Reader) (DataFrame, error) {
+	cr := csv.NewReader(r)
+	records, err := cr.ReadAll()
+	if err != nil {
+		return nil, err
+	}
+	ss := make([]Series, len(records))
+	for i, row := range records {
+		s := NewSeries(row...)
+		ss[i] = s
+	}
+	return NewDataFrame(ss, nil), nil
+}
+
+// WriteCsv writes a dataframe to the given io.Writer in csv format.
+func WriteCsv(w io.Writer, df DataFrame) error {
+	dft := df.Transpose()
+	records := make([][]string, len(dft))
+	for i, c := range dft.Cols() {
+		records[i] = dft[c]
+	}
+	cw := csv.NewWriter(w)
+	return cw.WriteAll(records)
 }
