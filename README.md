@@ -1,6 +1,5 @@
 # Po - Pandas for Go
 
-[![release](https://img.shields.io/github/release/golang-standards/project-layout.svg?style=flat)](https://github.com/asidlo/po/releases/latest)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/asidlo/po)
 [![godoc](https://img.shields.io/badge/godoc-reference-blue.svg?style=flat)](http://godoc.org/github.com/asidlo/po)
 [![go report](https://goreportcard.com/badge/github.com/golang-standards/project-layout?style=flat)](https://goreportcard.com/report/github.com/asidlo/po)

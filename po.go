@@ -37,7 +37,7 @@ const (
 type Series []string
 
 // DataFrame is a map datastructure containing Series values.
-// It is intented to represent a generic table where the keys
+// It is intended to represent a generic table where the keys
 // correspond to the individual column names and the rows correspond
 // to the original input series. Column names can be generated on
 // DataFrame instantiation via literal construct, or via the NewDataFrame()
