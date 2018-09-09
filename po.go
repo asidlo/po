@@ -43,17 +43,6 @@ type Series []string
 // DataFrame instantiation via literal construct, or via the NewDataFrame()
 type DataFrame map[string]Series
 
-// Cols returns all of the column names sorted for maintaining order.
-// The sorting is done using the sort.String() method from the std lib.
-func (df DataFrame) Cols() []string {
-	var keys []string
-	for k := range df {
-		keys = append(keys, k)
-	}
-	sort.Strings(keys)
-	return keys
-}
-
 // Head returns the first i entries in a series.
 // If a slice of ints is passed, only the first entry is used.
 // I used the varargs operator to allow for optional entry.
@@ -116,17 +105,53 @@ func (s Series) Pick(i ...int) Series {
 	return series
 }
 
+// Copy returns a copy of a dataframe.
+func (df DataFrame) Copy() DataFrame {
+	dfc := make(DataFrame, len(df))
+	for k, v := range df {
+		dfc[k] = v
+	}
+	return dfc
+}
+
+// DropColumns removes columns from the DataFrame.
+func (df DataFrame) DropColumns(c ...string) DataFrame {
+	dfc := df.Copy()
+	for _, s := range c {
+		if _, ok := dfc[s]; ok {
+			delete(dfc, s)
+		}
+	}
+	return dfc
+}
+
+// Rename renames the columns in the dataframe that correspond to the provided keys
+// in the map parameter.
+func (df DataFrame) Rename(c map[string]string) DataFrame {
+	dfc := df.Copy()
+	for k, v := range c {
+		// Note, could have just dropped since check is done in drop
+		// but then I would have the chance of adding an empty column
+		// if colname never existed in df.
+		if val, ok := dfc[k]; ok {
+			dfc = dfc.DropColumns(k)
+			dfc[v] = val
+		}
+	}
+	return dfc
+}
+
 // Transpose returns a transposed DataFrame of the original DataFrame.
 // The transposed column names become a string of the former row index.
 func (df DataFrame) Transpose() DataFrame {
 	r, c := df.Dims()
 	dft := make(DataFrame, r)
-	cols := df.Cols()
+	Columns := df.Columns()
 	for i := 0; i < r; i++ {
 		index := strconv.Itoa(i)
 		col := make(Series, c)
 		dft[index] = col
-		for j, v := range cols {
+		for j, v := range Columns {
 			dft[index][j] = df[v][i]
 		}
 	}
@@ -146,8 +171,8 @@ func (df DataFrame) String() string {
 	table.SetColumnSeparator(" ")
 	table.SetHeaderLine(true)
 	table.SetAlignment(tablewriter.ALIGN_CENTER)
-	cols := df.Cols()
-	table.SetHeader(cols)
+	Columns := df.Columns()
+	table.SetHeader(Columns)
 	dft := df.Transpose()
 	for _, v := range dft {
 		table.Append(v)
@@ -184,24 +209,6 @@ func (df DataFrame) Head(i ...int) DataFrame {
 	return df.Subset(0, limit, 1, nil)
 }
 
-// IntGenerator generates a slice of integers that can then be used
-// to apply different functions on DataFrames or Series, such as
-// Subset() or Pick().
-func IntGenerator(start int, end int, step int, exclude []int) []int {
-	im := make(map[int]int, len(exclude))
-	for _, v := range exclude {
-		im[v] = v
-	}
-	var ints []int
-	for i := 0; i < end; i += step {
-		_, ok := im[i]
-		if !ok {
-			ints = append(ints, i)
-		}
-	}
-	return ints
-}
-
 // Subset returns a subset of the original DataFrame. It grabs entries from
 // each column by their indices, starting from the start int to the end int
 // using the specified step size and excluding any indices specified.
@@ -228,10 +235,10 @@ func (df DataFrame) Pick(i ...int) DataFrame {
 
 // Dims returns the number of rows, number of columns in a DataFrame
 func (df DataFrame) Dims() (int, int) {
-	cols := df.Cols()
-	if len(cols) > 0 {
-		rowLen := len(df[cols[0]])
-		colLen := len(cols)
+	Columns := df.Columns()
+	if len(Columns) > 0 {
+		rowLen := len(df[Columns[0]])
+		colLen := len(Columns)
 		return rowLen, colLen
 	}
 	return 0, 0
@@ -253,6 +260,35 @@ func (df DataFrame) Select(c ...string) DataFrame {
 	return rdf
 }
 
+// Columns returns all of the column names sorted for maintaining order.
+// The sorting is done using the sort.String() method from the std lib.
+func (df DataFrame) Columns() []string {
+	var keys []string
+	for k := range df {
+		keys = append(keys, k)
+	}
+	sort.Strings(keys)
+	return keys
+}
+
+// IntGenerator generates a slice of integers that can then be used
+// to apply different functions on DataFrames or Series, such as
+// Subset() or Pick().
+func IntGenerator(start int, end int, step int, exclude []int) []int {
+	im := make(map[int]int, len(exclude))
+	for _, v := range exclude {
+		im[v] = v
+	}
+	var ints []int
+	for i := 0; i < end; i += step {
+		_, ok := im[i]
+		if !ok {
+			ints = append(ints, i)
+		}
+	}
+	return ints
+}
+
 // NewSeries is a variadic function that returns a Series comprised of the provided strings
 func NewSeries(s ...string) Series {
 	series := make(Series, len(s))
@@ -263,30 +299,30 @@ func NewSeries(s ...string) Series {
 }
 
 // NewDataFrame returns a new DataFrame object with rows corresponding
-// to provided ss and column names corresponding to provided cols.
+// to provided ss and column names corresponding to provided Columns.
 // If no ss is provided, then an empty dataframe will be created using
-// any provided column names. If the number of cols provided < len(ss)
+// any provided column names. If the number of Columns provided < len(ss)
 // for any given ss, then the column names will be auto generated
-// for the remaining entries. If the len(cols) > len(ss) for any given ss,
+// for the remaining entries. If the len(Columns) > len(ss) for any given ss,
 // then the ss will be extended with empty string values for each remaining col.
-func NewDataFrame(ss []Series, cols []string) DataFrame {
+func NewDataFrame(ss []Series, Columns []string) DataFrame {
 	if len(ss) == 0 {
-		df := make(DataFrame, len(cols))
-		if len(cols) > 0 {
-			for _, k := range cols {
+		df := make(DataFrame, len(Columns))
+		if len(Columns) > 0 {
+			for _, k := range Columns {
 				df[k] = Series{}
 			}
 		}
 		return df
 	}
-	return createDataFrame(ss, cols)
+	return createDataFrame(ss, Columns)
 }
 
 // createDataFrame returns a new DataFrame supplementing each Series with
 // additional empty string entries to make each Series of equal length.
 // It also adds additional column names if necessary to match max series length.
-func createDataFrame(ss []Series, cols []string) DataFrame {
-	df := make(DataFrame, len(cols))
+func createDataFrame(ss []Series, Columns []string) DataFrame {
+	df := make(DataFrame, len(Columns))
 
 	// Find max length
 	maxSeriesLen := 0
@@ -305,16 +341,16 @@ func createDataFrame(ss []Series, cols []string) DataFrame {
 		}
 	}
 
-	// Add columns if maxSeriesLen > len(cols)
-	cDiff := maxSeriesLen - len(cols)
+	// Add columns if maxSeriesLen > len(Columns)
+	cDiff := maxSeriesLen - len(Columns)
 	if cDiff > 0 {
 		for i := 0; i < cDiff; i++ {
 			s := genRandStr(RandStringLen)
-			cols = append(cols, s)
+			Columns = append(Columns, s)
 		}
 	}
 
-	// Add entries to series if len(cols) > maxSeriesLen
+	// Add entries to series if len(Columns) > maxSeriesLen
 	if cDiff < 0 {
 		cDiff = -cDiff
 		for ix := range ss {
@@ -325,8 +361,8 @@ func createDataFrame(ss []Series, cols []string) DataFrame {
 	}
 
 	// Create DataFrame since now len(col) == maxLenSeries
-	for c := 0; c < len(cols); c++ {
-		col := cols[c]
+	for c := 0; c < len(Columns); c++ {
+		col := Columns[c]
 		s := make(Series, len(ss))
 		df[col] = s
 		for r := 0; r < len(ss); r++ {
@@ -407,9 +443,10 @@ func ReadCsv(r io.Reader) (DataFrame, error) {
 func WriteCsv(w io.Writer, df DataFrame) error {
 	dft := df.Transpose()
 	records := make([][]string, len(dft))
-	for i, c := range dft.Cols() {
+	for i, c := range dft.Columns() {
 		records[i] = dft[c]
 	}
 	cw := csv.NewWriter(w)
+	// Calls Flush internally
 	return cw.WriteAll(records)
 }

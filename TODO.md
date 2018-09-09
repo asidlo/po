@@ -5,7 +5,7 @@ links for pandas examples/docs:
 - [Pandas Dataframes](https://pandas.pydata.org/pandas-docs/stable/api.html#dataframe)
 - [Pandas Series](https://pandas.pydata.org/pandas-docs/stable/api.html#series)
 - [Pandas Functions](https://paulovasconcellos.com.br/28-useful-pandas-functions-you-might-not-know-de42c59db085)
-- [Panas Cheatsheet](https://www.dataquest.io/blog/pandas-cheat-sheet/)
+- [Pandas Cheatsheet](https://www.dataquest.io/blog/pandas-cheat-sheet/)
 
 Functions
 
@@ -16,10 +16,8 @@ Functions
 - [ ] FillEmpty(all=true, "")
 - [ ] IsEmpty()/IsNull()
 - [ ] po.DataFrame.Count() DataFrame [returns column and number of non null entries]
-- [ ] po.DataFrame.DropCols([]string{"a", "b"}) [removing columns]
 - [ ] po.DataFrame.DropRows([]int{0,1,2}) [removing rows]
 - [ ] po.Series.Apply(func() po.Series)
-- [ ] po.DataFrame.Rename(map[string]string)
 - [ ] po.Series.Unique() po.Series
 - [ ] po.Series.ToFloatSlice() po.FloatSlice
 - [ ] po.Series.ToIntSlice() po.IntSlice
@@ -41,6 +39,8 @@ Functions
 - [ ] Sample(n=, seed=)
 - [ ] ReadSql()/WriteSql(xslx, "Sheet 1")
 - [ ] ReadExcel()/WriteExcel(xslx, "Sheet 1")
+- [x] po.DataFrame.DropCols([]string{"a", "b"}) [removing columns]
+- [x] po.DataFrame.Rename(map[string]string)
 - [x] po.GenerateDataFrame(n int) utilize other generators
 - [x] po.DataFrame.Select(colNames []string) po.DataFrame
 - [x] ReadCsv()/WriteCsv()

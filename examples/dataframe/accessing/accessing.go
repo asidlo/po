@@ -12,7 +12,7 @@ func main() {
 	df := po.NewDataFrame([]po.Series{s1, s2}, []string{"label", "index", "weight"})
 
 	// Get Column Names for DataFrame
-	cols := df.Cols()
+	cols := df.Columns()
 	fmt.Println(cols)
 
 	// Accessing Columns from DataFrame
