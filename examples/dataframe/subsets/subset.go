@@ -18,4 +18,8 @@ func main() {
 	// Select a Subset of a DataFrame via range
 	dfs := df.Subset(0, 5, 2, nil)
 	fmt.Println(dfs)
+
+	// Use select to pick certain columns from a dataframe
+	dfSelect := df.Select("label", "weight")
+	fmt.Println(dfSelect)
 }

@@ -16,4 +16,12 @@ func main() {
 	fmt.Println("Taking transpose of a DataFrame:")
 	dft := df.Transpose()
 	fmt.Println(dft)
+
+	// Renaming dataframe columns
+	dft = dft.Rename(map[string]string{"0": "Col1", "1": "Col2"})
+	fmt.Println(dft)
+
+	// Removing columns from the dataframe
+	dft = dft.DropColumns("Col2")
+	fmt.Println(dft)
 }
